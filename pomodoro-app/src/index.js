@@ -1,17 +1,70 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import ModalComponent from './components/ModalComponent.js'
+import {Button, Modal} from 'react-bootstrap';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+class PlaylistTable extends React.Component {
+  render() {
+    return (
+      <>
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Playlist name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>data</td>
+          </tr>
+        </tbody>
+      </table>
+      </>
+    )
+  }
+}
+
+
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state={
+      show:false
+    }
+  }
+  handleModal() {
+    this.setState({show:!this.state.show})
+  }
+  render() {
+    return (
+      <div className='container'>
+        <div className=''>
+          <br/>
+          <h1 className='title-text'> Pomodoro Manager </h1>
+          <br/>
+          <ModalComponent buttonText='Add break playlist' modalHeader='Add break playlist'/>
+          <PlaylistTable />
+          
+          <br/>
+          <br/>
+          <ModalComponent buttonText='Add study playlist' modalHeader='Add study playlist'/>
+          <PlaylistTable />
+          <br/>
+        </div>
+      </div>
+      
+    );
+  }
+}
+
+const container = document.getElementById("root");
+const root = ReactDOM.createRoot(container);
+root.render(<App />);
+
