@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
 import {Button, Modal} from 'react-bootstrap';
 
 class ModalComponent extends React.Component {
@@ -26,4 +25,4 @@ class ModalComponent extends React.Component {
   }
 }
 
-export default ModalComponent
+export default ModalComponent;

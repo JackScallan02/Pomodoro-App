@@ -1,35 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import ModalComponent from './components/ModalComponent.js'
+import PlaylistTable from './components/PlaylistTableComponent.js'
 import {Button, Modal} from 'react-bootstrap';
 import './index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-
-
-class PlaylistTable extends React.Component {
-  render() {
-    return (
-      <>
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Playlist name</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>data</td>
-          </tr>
-        </tbody>
-      </table>
-      </>
-    )
-  }
-}
-
 
 
 class App extends React.Component {
@@ -39,9 +15,11 @@ class App extends React.Component {
       show:false
     }
   }
+  
   handleModal() {
     this.setState({show:!this.state.show})
   }
+  
   render() {
     return (
       <div className='container'>
