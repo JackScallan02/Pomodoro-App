@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Modal} from 'react-bootstrap';
 
-class ModalComponent extends React.Component {
+class PlaylistModal extends React.Component {
   constructor(props) {
     super(props);
     var breakMap;
@@ -122,4 +122,4 @@ class ModalComponent extends React.Component {
   }
 }
 
-export default ModalComponent;
+export default PlaylistModal;
