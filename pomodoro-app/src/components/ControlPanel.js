@@ -32,11 +32,28 @@ class ControlPanel extends React.Component {
 
     let divisor_for_seconds = divisor_for_minutes % 60;
     let seconds = Math.ceil(divisor_for_seconds);
+    
+    let hDisp = hours;
+    let mDisp = minutes;
+    let sDisp = seconds;
+    
+    if (hours < 10) {
+      hDisp = '0' + hours.toString();
+    }
+    if (minutes < 10) {
+      mDisp = '0' + minutes.toString();
+    }
+    if (seconds < 10) {
+      sDisp = '0' + seconds.toString();
+    }
 
     let timeObj = {
       "h": hours,
       "m": minutes,
-      "s": seconds
+      "s": seconds,
+      "hDisp": hDisp,
+      "mDisp": mDisp,
+      "sDisp": sDisp
     };
     return timeObj;
   }
@@ -87,7 +104,7 @@ class ControlPanel extends React.Component {
       <>
 
       <div id="timer-container">
-        {this.state.time.m} : {this.state.time.s}
+        {this.state.time.mDisp} : {this.state.time.sDisp}
       </div>
       <br/>
       <div id="timer-button-container">
