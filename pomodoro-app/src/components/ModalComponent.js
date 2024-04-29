@@ -32,7 +32,7 @@ class ModalComponent extends React.Component {
   getPlaylists() {
 
     const apiUrl = 'https://api.spotify.com/v1/users/22acukbvk3tk5p3puyd76zxdq/playlists';
-    const api_key = ''; //replace with key
+    const api_key = 'BQDFyJdvtaesmQwpXIC92HXLB-qurDs7jltskqhUMZf8gonED8rXhMqcFgtDECVq2E-neRKOrNIR17GBX59yhD5lAFA0DFgNUSI3wtu5ACDn0nWwVv4'; //replace with key
     
     const requestOptions = {
       method: 'GET',
@@ -56,19 +56,19 @@ class ModalComponent extends React.Component {
     });
   }
   
-  setPlaylistMap(map, index, imageUrl, itemName) {
-    if (map.has(index)) {
-      map.delete(index);
+  setPlaylistMap(map, index, imageUrl, itemName, playlistId) {
+    if (map.has(playlistId)) {
+      map.delete(playlistId);
     } else {
-      map.set(index, {imageUrl: imageUrl, itemName: itemName});
+      map.set(playlistId, {imageUrl: imageUrl, itemName: itemName});
     }
   }
   
-  radioButtonClicked(imageUrl, itemName, index) {
+  radioButtonClicked(imageUrl, itemName, index, playlistId) {
     if (this.props.playlistType == 'study') {
-      this.setPlaylistMap(this.state.studyMap, index, imageUrl, itemName);
+      this.setPlaylistMap(this.state.studyMap, index, imageUrl, itemName, playlistId);
     } else {
-      this.setPlaylistMap(this.state.breakMap, index, imageUrl, itemName);
+      this.setPlaylistMap(this.state.breakMap, index, imageUrl, itemName, playlistId);
     }
   }
   
@@ -86,12 +86,12 @@ class ModalComponent extends React.Component {
                 
               return (
                 <>
-                {((this.props.playlistType=='break' && !this.state.breakMap.has(index)) || (this.props.playlistType=='study' && !this.state.studyMap.has(index)))&&
+                {((this.props.playlistType=='break' && !this.state.breakMap.has(item.id)) || (this.props.playlistType=='study' && !this.state.studyMap.has(item.id))) &&
                 (      
                   <tr key={index}>
                   <th scope="row">
                   <div>
-                    <input className="form-check-input" type="checkbox" id={index} value="" aria-label="..." onChange={()=>{this.radioButtonClicked(item.images[0].url, item.name, index)}}/>
+                    <input className="form-check-input" type="checkbox" id={index} value="" aria-label="..." onChange={()=>{this.radioButtonClicked(item.images[0].url, item.name, index, item.id)}}/>
                   </div>
                   </th>
                   <td> <img src={item.images[0].url} alt="Playlist Image" width="50px"/> </td>

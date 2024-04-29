@@ -4,11 +4,30 @@
 
 td 
 {
-    width: 100;
+    width: 400px;
 }
 
 #cssTable td 
 {
     text-align: center; 
     vertical-align: middle;
+}
+
+#timer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+}
+
+#timer-button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+.timer-button {
+  width: 17.5%;
 }
