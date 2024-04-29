@@ -8,25 +8,17 @@ import './index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
-
-
-
-
-
 class App extends React.Component {
   constructor() {
     super();
     this.state={
-      show:false
+      show:false,
     }
   }
+
   
   handleModal() {
     this.setState({show:!this.state.show})
-  }
-  
-  getSelectedPlaylists(val) {
-    console.log(val);
   }
   
   render() {
@@ -37,12 +29,14 @@ class App extends React.Component {
           <br/>
           <h1 className='title-text'> Pomodoro Manager </h1>
           <br/>
-          <ModalComponent buttonText='Modify break playlist' modalHeader='Select the playlists you want to shuffle through for breaks'/>
-          <PlaylistTable />
+          <ModalComponent buttonText='Modify break playlist' modalHeader='Select the playlists you want to shuffle through for breaks' playlistType='break'/>
+          <br/>
+          <PlaylistTable playlistMap={this.state.breakMap} playlistType='break'/>
           <br/>
           <br/>
-          <ModalComponent buttonText='Modify study playlist' modalHeader='Select the playlists you want to shuffle through for studying'/>
-          <PlaylistTable />
+          <ModalComponent buttonText='Modify study playlist' modalHeader='Select the playlists you want to shuffle through for studying' playlistType='study'/>
+          <br/>
+          <PlaylistTable playlistMap={this.state.studyMap} playlistType='study'/>
           <br/>
         </div>
       </div>
