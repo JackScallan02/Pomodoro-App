@@ -108,7 +108,7 @@ class ControlPanel extends React.Component {
       </div>
       <br/>
       <div id="timer-button-container">
-        <button class="btn btn-success timer-button" onClick={()=>{
+        <button className="btn btn-success timer-button" onClick={()=>{
           if (!this.state.timeStarted) {
             console.log("Started");
             this.startTimer();
@@ -118,7 +118,7 @@ class ControlPanel extends React.Component {
           }
           
         }}>{this.state.startButtonText}</button>
-        <button class="btn btn-danger timer-button" onClick={this.resetTimer}>Reset</button>
+        <button className="btn btn-danger timer-button" onClick={this.resetTimer}>Reset</button>
       </div>
       <br/>
       </>
