@@ -8,95 +8,35 @@ class SettingsModal extends React.Component {
     super();
     this.state={
       show:false,
-      pomodoroSeconds: '',
-      pomodoroMinutes: '',
-      pomodoroCount: 0,
-      pomodoroTimeDisplay: '',
-      shortBreakTime: '',
-      longBreakTime: '',
-      keyPressed: ''
+      pomodoroMinutes: 0,
+      shortBreakMinutes: 0,
+      longBreakMinutes: 0,
+      pomodoroSeconds: 0,
+      shortBreakSeconds: 0,
+      longBreakSeconds: 0,
+      submitButtonPressed: false
     }
-    this.pomodoroInputChanged = this.pomodoroInputChanged.bind(this);
-    this.pomodoroKeyDown = this.pomodoroKeyDown.bind(this);
+  }
+  
+  updatePomodoro = (mins, seconds) => {
+    this.setState({pomodoroMinutes: mins, pomodoroSeconds: seconds})
+  }
+  updateShortBreak = (mins, seconds) => {
+    this.setState({shortBreakMinutes: mins, shortBreakSeconds: seconds})
+  }
+  updateLongBreak = (mins, seconds) => {
+    this.setState({longBreakMinutes: mins, longBreakSeconds: seconds})
   }
   
   handleModal() {
     this.setState({show:!this.state.show})
   }
   
-  pomodoroKeyDown(e) {
-    var key = e.keyCode || e.charCode;
-    this.setState({keyPressed: key});
-  }
-  
-  pomodoroInputChanged(e) {
-    let keyPressed = e.target.getAttribute('a-key')
-    if ((keyPressed < 48 || keyPressed > 57) && (keyPressed != 8 && keyPressed != 46)) { //not 0-9
-      return;
+  checkReadyToSubmit() {
+    if (this.state.pomodoroMinutes >= 5 && (this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds < this.state.longBreakMinutes*60 + this.state.longBreakSeconds) && this.state.longBreakMinutes >= 1 && this.state.shortBreakMinutes >= 1) {
+      return true;
     }
-    let keyVal = String.fromCharCode(keyPressed);
-    
-    if (keyPressed == 8 || keyPressed == 46) { // Backspace
-      if (this.state.pomodoroCount == 1) {
-          this.setState({
-            pomodoroCount: 0,
-            pomodoroSeconds: 0,
-            pomodoroMinutes: 0,
-            pomodoroTimeDisplay: '00:00'
-          });
-      } else if (this.state.pomodoroCount == 2) {
-          this.setState({
-            pomodoroCount: 1,
-            pomodoroSeconds: parseInt(this.state.pomodoroTimeDisplay.substring(3, 4)),
-            pomodoroMinutes: 0,
-            pomodoroTimeDisplay: '00:0' + this.state.pomodoroTimeDisplay.substring(3, 4)
-          });
-      } else if (this.state.pomodoroCount == 3) {
-          this.setState({
-            pomodoroCount: 2,
-            pomodoroSeconds: parseInt(this.state.pomodoroTimeDisplay.substring(1, 2) + this.state.pomodoroTimeDisplay.substring(3, 4)),
-            pomodoroMinutes: 0,
-            pomodoroTimeDisplay: '00:' + this.state.pomodoroTimeDisplay.substring(1, 2) + this.state.pomodoroTimeDisplay.substring(3, 4)
-          });
-      } else if(this.state.pomodoroCount == 4) {
-          this.setState({
-            pomodoroCount: 3,
-            pomodoroSeconds: parseInt(this.state.pomodoroTimeDisplay.substring(1, 2) + this.state.pomodoroTimeDisplay.substring(3, 4)),
-            pomodoroMinutes: parseInt(this.state.pomodoroTimeDisplay.substring(0, 1)),
-            pomodoroTimeDisplay: '0' + this.state.pomodoroTimeDisplay.substring(0, 1) + ':' + this.state.pomodoroTimeDisplay.substring(1, 2) + this.state.pomodoroTimeDisplay.substring(3, 4)
-        });
-      }
-    } else { //0-9
-      if (this.state.pomodoroCount == 0) {
-        this.setState({
-          pomodoroCount: 1,
-          pomodoroSeconds: parseInt(keyVal),
-          pomodoroMinutes: 0,
-          pomodoroTimeDisplay: '00:0' + keyVal
-        });
-      } else if (this.state.pomodoroCount == 1) {
-        this.setState({
-          pomodoroCount: 2,
-          pomodoroSeconds: parseInt(this.state.pomodoroSeconds.toString() + keyVal),
-          pomodoroMinutes: 0,
-          pomodoroTimeDisplay: '00:' + this.state.pomodoroSeconds + keyVal
-        });
-      } else if (this.state.pomodoroCount == 2) {
-        this.setState({
-          pomodoroCount: 3,
-          pomodoroSeconds: parseInt(this.state.pomodoroTimeDisplay.substring(4, 5) + keyVal),
-          pomodoroMinutes: parseInt(this.state.pomodoroTimeDisplay.substring(3, 4)),
-          pomodoroTimeDisplay: '0' + this.state.pomodoroTimeDisplay.substring(3, 4) + ':' + this.state.pomodoroTimeDisplay.substring(4, 5) + keyVal
-        });
-      } else if (this.state.pomodoroCount == 3) {
-        this.setState({
-          pomodoroCount: 4,
-          pomodoroSeconds: parseInt(this.state.pomodoroTimeDisplay.substring(4, 5) + keyVal),
-          pomodoroMinutes: parseInt(this.state.pomodoroTimeDisplay.substring(1,2) + this.state.pomodoroTimeDisplay.substring(3, 4)),
-          pomodoroTimeDisplay: this.state.pomodoroTimeDisplay.substring(1, 2) + this.state.pomodoroTimeDisplay.substring(3, 4) + ':' + this.state.pomodoroTimeDisplay.substring(4, 5) + keyVal
-        });
-      }
-    }
+    return false;
   }
   
   render() {
@@ -109,21 +49,46 @@ class SettingsModal extends React.Component {
         </svg>
       </Button>
       <Modal show={this.state.show} onHide={()=>{this.handleModal()}}>
-      <form>
       <Modal.Header closeButton><p className="modal-title w-100 text-center settings-header">Settings</p></Modal.Header>
       <Modal.Body>
       
         <div className="row">
-          <DynamicTimeInput inputCaption="Pomodoro length"/>
-          <DynamicTimeInput inputCaption="Short break length"/>
-          <DynamicTimeInput inputCaption="Long break length"/>
+          <DynamicTimeInput inputCaption="Pomodoro length" pomodoroMinutes={this.state.pomodoroMinutes} pomodoroSeconds = {this.state.pomodoroSeconds} updatePomodoro={this.updatePomodoro}/>
+          <DynamicTimeInput inputCaption="Short break length" shortBreakMinutes={this.state.shortBreakMinutes} shortBreakSeconds = {this.state.shortBreakSeconds} updateShortBreak={this.updateShortBreak}/>
+          <DynamicTimeInput inputCaption="Long break length" longBreakMinutes={this.state.longBreakMinutes} longBreakSeconds = {this.state.longBreakSeconds} updateLongBreak={this.updateLongBreak}/>
         </div>
+        {this.state.submitButtonPressed && this.state.pomodoroMinutes < 5 ?
+          (<div className="alert alert-danger" role="alert">
+            You must have at least 5 pomodoro minutes. Minutes: {this.state.pomodoroMinutes}
+          </div>)
+          : (this.state.submitButtonPressed && this.state.shortBreakMinutes < 1) ?
+          (<div className="alert alert-danger" role="alert">
+            Your short break must be at least 1 minute
+          </div>)
+          : (this.state.submitButtonPressed && this.state.longBreakMinutes < 1) ?
+          (<div className="alert alert-danger" role="alert">
+            Your long break must be at least 1 minute
+          </div>)
+          :
+          (this.state.submitButtonPressed && this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds) > (this.state.longBreakMinutes*60 + this.state.longBreakSeconds) ?
+          (<div className="alert alert-danger" role="alert">
+            Your long break must be at least as long as your short break
+          </div>)
+          :
+          (<></>)
+        }
       
 
       </Modal.Body>
-      <Modal.Footer><Button type='submit' onClick={()=>{this.handleModal()}}>Save changes</Button>
+      <Modal.Footer><Button type='button' onClick={()=>{
+        if (this.checkReadyToSubmit()) {
+          this.handleModal();
+          this.setState({submitButtonPressed: false});
+        }
+        this.setState({submitButtonPressed: true});
+        
+      }}>Save changes</Button>
       </Modal.Footer>
-      </form>
       </Modal>
       </>
     );
