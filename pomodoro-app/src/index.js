@@ -9,6 +9,7 @@ import {Button, Modal} from 'react-bootstrap';
 import './index.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import { POMODORO_TIME, LONG_BREAK_TIME, SHORT_BREAK_TIME } from './constants.js';
 
 
 class App extends React.Component {
@@ -16,12 +17,24 @@ class App extends React.Component {
     super();
     this.state={
       show:false,
+      pomodoroTotalSeconds: POMODORO_TIME,
+      longBreakTotalSeconds: LONG_BREAK_TIME,
+      shortBreakTotalSeconds: SHORT_BREAK_TIME
     }
+    this.updateTime = this.updateTime.bind(this);
   }
 
   
   handleModal() {
     this.setState({show:!this.state.show})
+  }
+  
+  updateTime(pomSecs, shortBreakSecs, longBreakSecs) {
+    this.setState({
+      pomodoroTotalSeconds: pomSecs,
+      shortBreakTotalSeconds: shortBreakSecs,
+      longBreakTotalSeconds: longBreakSecs
+    })
   }
   
   render() {
@@ -30,10 +43,10 @@ class App extends React.Component {
       <div className='container'>
         <div className=''>
           <br/>
-          <SettingsModal />
+          <SettingsModal pomodoroSeconds={this.state.pomodoroTotalSeconds} longBreakSeconds={this.state.longBreakSeconds} shortBreakSeconds={this.state.shortBreakSeconds} updateTime={this.updateTime}/>
           <h1 className='title-text'> Pomodoro Manager </h1>
           <br/>
-          <ControlPanel />
+          <ControlPanel pomodoroSeconds={this.state.pomodoroTotalSeconds} longBreakSeconds={this.state.longBreakTotalSeconds} shortBreakSeconds={this.state.shortBreakTotalSeconds}/>
           <br/>
           <PlaylistModal buttonText='Modify break playlist' modalHeader='Select the playlists you want to shuffle through for breaks' playlistType='break'/>
           <br/>

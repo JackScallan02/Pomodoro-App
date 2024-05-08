@@ -1,5 +1,4 @@
 import React from 'react';
-import { POMODORO_TIME, LONG_BREAK_TIME, SHORT_BREAK_TIME } from '../constants.js';
 
 
 class DynamicTimeInput extends React.Component {

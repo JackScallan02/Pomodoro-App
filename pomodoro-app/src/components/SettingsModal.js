@@ -19,13 +19,13 @@ class SettingsModal extends React.Component {
   }
   
   updatePomodoro = (mins, seconds) => {
-    this.setState({pomodoroMinutes: mins, pomodoroSeconds: seconds})
+    this.setState({pomodoroMinutes: mins, pomodoroSeconds: seconds});
   }
   updateShortBreak = (mins, seconds) => {
-    this.setState({shortBreakMinutes: mins, shortBreakSeconds: seconds})
+    this.setState({shortBreakMinutes: mins, shortBreakSeconds: seconds});
   }
   updateLongBreak = (mins, seconds) => {
-    this.setState({longBreakMinutes: mins, longBreakSeconds: seconds})
+    this.setState({longBreakMinutes: mins, longBreakSeconds: seconds});
   }
   
   handleModal() {
@@ -33,9 +33,15 @@ class SettingsModal extends React.Component {
   }
   
   checkReadyToSubmit() {
-    if (this.state.pomodoroMinutes >= 5 && (this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds < this.state.longBreakMinutes*60 + this.state.longBreakSeconds) && this.state.longBreakMinutes >= 1 && this.state.shortBreakMinutes >= 1) {
+    let totalShortBreakSeconds = this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds
+    let totalLongBreakSeconds = this.state.longBreakMinutes*60 + this.state.longBreakSeconds
+    
+    if (this.state.pomodoroMinutes >= 5 &&
+      (totalShortBreakSeconds < totalLongBreakSeconds) &&
+      this.state.longBreakMinutes >= 1 && this.state.shortBreakMinutes >= 1) {
       return true;
     }
+    
     return false;
   }
   
@@ -81,11 +87,16 @@ class SettingsModal extends React.Component {
 
       </Modal.Body>
       <Modal.Footer><Button type='button' onClick={()=>{
-        if (this.checkReadyToSubmit()) {
+        // if (this.checkReadyToSubmit()) {
           this.handleModal();
           this.setState({submitButtonPressed: false});
-        }
-        this.setState({submitButtonPressed: true});
+          let pomodoroTotalSeconds = this.state.pomodoroMinutes*60 + this.state.pomodoroSeconds
+          let shortBreakTotalSeconds = this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds
+          let longBreakTotalSeconds = this.state.longBreakMinutes*60 + this.state.longBreakSeconds
+          this.props.updateTime(pomodoroTotalSeconds, shortBreakTotalSeconds, longBreakTotalSeconds);
+        // } else {
+          this.setState({submitButtonPressed: true});
+        // }
         
       }}>Save changes</Button>
       </Modal.Footer>
