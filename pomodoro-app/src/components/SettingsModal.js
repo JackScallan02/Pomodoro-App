@@ -14,7 +14,7 @@ class SettingsModal extends React.Component {
       pomodoroSeconds: 0,
       shortBreakSeconds: 0,
       longBreakSeconds: 0,
-      submitButtonPressed: false
+      submitButtonPressed: false,
     }
   }
   
@@ -63,6 +63,12 @@ class SettingsModal extends React.Component {
           <DynamicTimeInput inputCaption="Short break length" shortBreakMinutes={this.state.shortBreakMinutes} shortBreakSeconds = {this.state.shortBreakSeconds} updateShortBreak={this.updateShortBreak}/>
           <DynamicTimeInput inputCaption="Long break length" longBreakMinutes={this.state.longBreakMinutes} longBreakSeconds = {this.state.longBreakSeconds} updateLongBreak={this.updateLongBreak}/>
         </div>
+        
+        <div className="form-check form-switch">
+          <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked={this.props.shuffle} onChange={this.props.updateShuffleStatus}/>
+          <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Shuffle playlists</label>
+        </div>
+        
         {this.state.submitButtonPressed && this.state.pomodoroMinutes < 5 ?
           (<div className="alert alert-danger" role="alert">
             You must have at least 5 pomodoro minutes. Minutes: {this.state.pomodoroMinutes}

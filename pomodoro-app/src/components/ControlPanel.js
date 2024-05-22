@@ -1,5 +1,6 @@
 import React from 'react';
 import { POMODORO_TIME, LONG_BREAK_TIME, SHORT_BREAK_TIME } from '../constants.js';
+import {RunPlaylist} from '../spotify_service.js'
 
 class ControlPanel extends React.Component {
   constructor(props) {
@@ -99,11 +100,24 @@ class ControlPanel extends React.Component {
   
   startTimer() {
     //If at the beginning of running pomodoro or a break, start running one of the playlists
-    if (!this.state.playlistStarted && ((this.state.runningPomodoro && this.state.seconds == this.props.pomodoroSeconds) || (this.state.runningShortBreak && this.state.seconds == this.props.shortBreakSeconds) || (this.state.runningLongBreak && this.state.seconds == this.props.longBreakSeconds))) {
+    
+    if (!this.state.playlistStarted) {
+      let playlistToRunID;
+      if (this.state.runningPomodoro && this.state.seconds == this.props.pomodoroSeconds) {
+        //Run study playlist
+        playlistToRunID = this.selectStudyPlaylist();
+      } else if ((this.state.runningShortBreak && this.state.seconds == this.props.shortBreakSeconds) || (this.state.runningLongBreak && this.state.seconds == this.props.longBreakSeconds)) {
+        //Run break playlist 
+        playlistToRunID = this.selectBreakPlaylist();
+      }
+      
+      if (playlistToRunID) {
+        //RunPlaylist(playlistToRunID);
+      }
+      
       this.setState({playlistStarted: true});
-      console.log("Running new playlist");
-      //Run the playlist
     }
+    
     this.setState({timeStarted: true, startButtonText: "Pause", paused: false, reset: false})
     if (this.timer == 0 && this.state.seconds > 0) {
       this.timer = setInterval(this.countDown, 1000);
@@ -187,11 +201,16 @@ class ControlPanel extends React.Component {
   }
   
   selectStudyPlaylist() {
-    //Get random item from study map
+    //Get random playlist from study map
     let keys = Array.from(this.state.studyMap.keys());
-    return keys[Math.floor(Math.random() * keys.length)];
-    
-    
+    console.log(Math.floor(Math.random() * (keys.length + 1)));
+    return keys[Math.floor(Math.random() * (keys.length + 1))];
+  }
+  
+  selectBreakPlaylist() {
+    //Get random playlist from break map
+    let keys = Array.from(this.state.breakMap.keys());
+    return keys[Math.floor(Math.random() * (keys.length + 1))];
   }
   
   render() {
@@ -203,6 +222,7 @@ class ControlPanel extends React.Component {
       </div>
       <br/>
       <h4 className='title-text'> Current interval: {this.state.breakTypeDisp} </h4>
+      <br/>
       <br/>
       <div id="timer-button-container">
         <button className="btn btn-success timer-button" onClick={()=>{

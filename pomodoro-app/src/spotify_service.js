@@ -24,3 +24,7 @@ export function GetPlaylists() {
     console.log('Error: ', error);
   });
 }
+
+export function RunPlaylist(id) {
+  console.log("ID: ", id);
+}

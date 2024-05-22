@@ -21,8 +21,10 @@ class App extends React.Component {
       pomodoroTotalSeconds: POMODORO_TIME,
       longBreakTotalSeconds: LONG_BREAK_TIME,
       shortBreakTotalSeconds: SHORT_BREAK_TIME,
+      shuffle: true
     }
     this.updateTime = this.updateTime.bind(this);
+    this.updateShuffleStatus = this.updateShuffleStatus.bind(this);
   }
 
   
@@ -38,6 +40,10 @@ class App extends React.Component {
     })
   }
   
+  updateShuffleStatus() {
+    this.setState((prevState => ({shuffle: !prevState.shuffle})));
+  }
+  
   updatePlaylists(playlistMap) {
     this.setState({
       playlistMap: playlistMap
@@ -50,7 +56,7 @@ class App extends React.Component {
       <div className='container'>
         <div className=''>
           <br/>
-          <SettingsModal pomodoroSeconds={this.state.pomodoroTotalSeconds} longBreakSeconds={this.state.longBreakSeconds} shortBreakSeconds={this.state.shortBreakSeconds} updateTime={this.updateTime}/>
+          <SettingsModal pomodoroSeconds={this.state.pomodoroTotalSeconds} longBreakSeconds={this.state.longBreakSeconds} shortBreakSeconds={this.state.shortBreakSeconds} updateTime = {this.updateTime} shuffle={this.state.shuffle} updateShuffleStatus = {this.updateShuffleStatus}/>
           <h1 className='title-text'> Pomodoro Manager </h1>
           <br/>
           <ControlPanel pomodoroSeconds={this.state.pomodoroTotalSeconds} longBreakSeconds={this.state.longBreakTotalSeconds} shortBreakSeconds={this.state.shortBreakTotalSeconds}/>
