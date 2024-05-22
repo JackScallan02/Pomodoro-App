@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import DynamicTimeInput from './DynamicTimeInput.js'
+import { POMODORO_TIME, LONG_BREAK_TIME, SHORT_BREAK_TIME } from '../constants.js';
 
 class SettingsModal extends React.Component {
     
@@ -8,12 +9,12 @@ class SettingsModal extends React.Component {
     super();
     this.state={
       show:false,
-      pomodoroMinutes: 0,
-      shortBreakMinutes: 0,
-      longBreakMinutes: 0,
-      pomodoroSeconds: 0,
-      shortBreakSeconds: 0,
-      longBreakSeconds: 0,
+      pomodoroMinutes: Math.floor(POMODORO_TIME/60),
+      shortBreakMinutes: Math.floor(SHORT_BREAK_TIME/60),
+      longBreakMinutes: Math.floor(LONG_BREAK_TIME/60),
+      pomodoroSeconds: POMODORO_TIME,
+      shortBreakSeconds: SHORT_BREAK_TIME,
+      longBreakSeconds: LONG_BREAK_TIME,
       submitButtonPressed: false,
     }
   }

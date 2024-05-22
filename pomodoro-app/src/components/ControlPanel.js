@@ -166,7 +166,7 @@ class ControlPanel extends React.Component {
   }
   
   runPomodoro() {
-    this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds, runningShortBreak: false, runningLongBreak: false, runningPomodoro: true, playlistStarted: false, breakTypeDisp: "pomdoro"}, () => {
+    this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds, runningShortBreak: false, runningLongBreak: false, runningPomodoro: true, playlistStarted: false, breakTypeDisp: "pomodoro"}, () => {
       if (this.state.timeStarted) {
         this.startTimer();
       }
