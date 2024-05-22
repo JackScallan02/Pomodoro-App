@@ -35,7 +35,8 @@ class ControlPanel extends React.Component {
       shortBreakCount: 0,
       breakMap: breakMap,
       studyMap: studyMap,
-      playlistStarted: false
+      playlistStarted: false,
+      breakTypeDisp: "pomodoro"
     };
     this.timer = 0;
     this.startTimer = this.startTimer.bind(this);
@@ -43,12 +44,18 @@ class ControlPanel extends React.Component {
     this.resetTimer = this.resetTimer.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
     this.selectStudyPlaylist = this.selectStudyPlaylist.bind(this);
+    this.runNextState = this.runNextState.bind(this);
   }
   
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.pomodoroSeconds !== this.state.seconds && !this.state.timeStarted && !this.state.paused) {
-      this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds});
+    //If not paused and not started running and pomodoroseconds from props doesnt equal seconds from state
+      //then set the time and seconds to the pomodoro seconds from props 
+    if (this.state.runningPomodoro) {
+      if (this.props.pomodoroSeconds !== this.state.seconds && !this.state.timeStarted && !this.state.paused) {
+        this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds});
+      }
     }
+
   }
   
   secondsToTime(secs) {
@@ -119,13 +126,50 @@ class ControlPanel extends React.Component {
     }
     this.setState({seconds: this.props.pomodoroSeconds, time: this.secondsToTime(this.props.pomodoroSeconds)});
     this.setState({timeStarted: false, startButtonText: "Start", paused: false, reset: true});
-    this.setState({runningPomodoro: true, runningShortBreak: false, runningLongBreak: false, shortBreakCount: 0});
+    this.setState({runningPomodoro: true, runningShortBreak: false, runningLongBreak: false, shortBreakCount: 0, breakTypeDisp: "pomodoro"});
 
   }
   
   pauseTimer() {
     clearInterval(this.timer);
     this.setState({timeStarted: false, startButtonText: "Start", paused: true, reset: false})
+  }
+  
+  runShortBreak() {
+    this.setState({time: this.secondsToTime(this.props.shortBreakSeconds), seconds: this.props.shortBreakSeconds, runningPomodoro: false, runningShortBreak: true, runningLongBreak: false, shortBreakCount: this.state.shortBreakCount + 1, playlistStarted: false, breakTypeDisp: "short break"}, () => {
+      if (this.state.timeStarted) {
+        this.startTimer();
+      }
+    });
+  }
+  
+  runLongBreak() {
+    this.setState({time: this.secondsToTime(this.props.longBreakSeconds), seconds: this.props.longBreakSeconds, runningPomodoro: false, runningShortBreak: false, runningLongBreak: true, shortBreakCount: 0, playlistStarted: false, breakTypeDisp: "long break"}, () => {
+      if (this.state.timeStarted) {
+        this.startTimer();
+      }
+    });
+  }
+  
+  runPomodoro() {
+    this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds, runningShortBreak: false, runningLongBreak: false, runningPomodoro: true, playlistStarted: false, breakTypeDisp: "pomdoro"}, () => {
+      if (this.state.timeStarted) {
+        this.startTimer();
+      }
+    });
+  }
+  
+  runNextState() {
+    //Goes to the next break or pomodoro
+    if (this.state.runningPomodoro) {
+      if (this.state.shortBreakCount < 3) {
+        this.runShortBreak();
+      } else {
+        this.runLongBreak();
+      }
+    } else if (this.state.runningLongBreak || this.state.runningShortBreak) {
+      this.runPomodoro();
+    }  
   }
   
   countDown() {
@@ -138,23 +182,7 @@ class ControlPanel extends React.Component {
     
     // Check if we're at zero.
     if (seconds == -1) { 
-      if (this.state.runningPomodoro) {
-        if (this.state.shortBreakCount < 3) {
-          //Take a short break
-          this.setState({time: this.secondsToTime(this.props.shortBreakSeconds), seconds: this.props.shortBreakSeconds, runningPomodoro: false, runningShortBreak: true, shortBreakCount: this.state.shortBreakCount + 1, playlistStarted: false}, () => {
-            this.startTimer();
-          });
-        } else {
-          //Take a long break
-          this.setState({time: this.secondsToTime(this.props.longBreakSeconds), seconds: this.props.longBreakSeconds, runningPomodoro: false, runningLongBreak: true, shortBreakCount: 0, playlistStarted: false}, () => {
-            this.startTimer();
-          });
-        }
-      } else {
-        this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds, runningShortBreak: false, runningLongBreak: false, runningPomodoro: true, playlistStarted: false}, () => {
-          this.startTimer();
-        });
-      }
+      this.runNextState();
     }
   }
   
@@ -169,11 +197,12 @@ class ControlPanel extends React.Component {
   render() {
     return (
       <>
-
       <div id="timer-container">
         {this.state.time.mDisp} : {this.state.time.sDisp}
         <br/>
       </div>
+      <br/>
+      <h4 className='title-text'> Current interval: {this.state.breakTypeDisp} </h4>
       <br/>
       <div id="timer-button-container">
         <button className="btn btn-success timer-button" onClick={()=>{
@@ -186,6 +215,7 @@ class ControlPanel extends React.Component {
           
         }}>{this.state.startButtonText}</button>
         <button className="btn btn-danger timer-button" onClick={this.resetTimer}>Reset</button>
+        <button className="btn btn-primary timer-button" onClick={this.runNextState}>Jump to next</button>
       </div>
       <br/>
       </>

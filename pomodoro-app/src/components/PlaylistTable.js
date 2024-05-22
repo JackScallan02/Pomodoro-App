@@ -15,7 +15,6 @@ class PlaylistTable extends React.Component {
     }
   }
   render() {
-    console.log("map: ", this.playlistMap);
     return (
       <>
       <br/>
