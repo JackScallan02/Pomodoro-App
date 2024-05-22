@@ -9,6 +9,19 @@ class ControlPanel extends React.Component {
       //shortbreak: 5 minutes
       //longbreak: 15 minutes
       //longbreak every 4 times
+    var breakMap;
+    var studyMap;
+    if (!localStorage.getItem("breakMap")) {
+      breakMap = new Map();
+    } else {
+      breakMap = new Map(JSON.parse(localStorage.getItem("breakMap")));
+    }
+    
+    if (!localStorage.getItem("studyMap")) {
+      studyMap = new Map();
+    } else {
+      studyMap = new Map(JSON.parse(localStorage.getItem("studyMap")));
+    }
     this.state = {
       time: this.secondsToTime(this.props.pomodoroSeconds),
       seconds: this.props.pomodoroSeconds,
@@ -19,13 +32,17 @@ class ControlPanel extends React.Component {
       runningPomodoro: true,
       runningShortBreak: false,
       runningLongBreak: false,
-      shortBreakCount: 0
+      shortBreakCount: 0,
+      breakMap: breakMap,
+      studyMap: studyMap,
+      playlistStarted: false
     };
     this.timer = 0;
     this.startTimer = this.startTimer.bind(this);
     this.countDown = this.countDown.bind(this);
     this.resetTimer = this.resetTimer.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
+    this.selectStudyPlaylist = this.selectStudyPlaylist.bind(this);
   }
   
   componentDidUpdate(prevProps, prevState) {
@@ -74,6 +91,12 @@ class ControlPanel extends React.Component {
   }
   
   startTimer() {
+    //If at the beginning of running pomodoro or a break, start running one of the playlists
+    if (!this.state.playlistStarted && ((this.state.runningPomodoro && this.state.seconds == this.props.pomodoroSeconds) || (this.state.runningShortBreak && this.state.seconds == this.props.shortBreakSeconds) || (this.state.runningLongBreak && this.state.seconds == this.props.longBreakSeconds))) {
+      this.setState({playlistStarted: true});
+      console.log("Running new playlist");
+      //Run the playlist
+    }
     this.setState({timeStarted: true, startButtonText: "Pause", paused: false, reset: false})
     if (this.timer == 0 && this.state.seconds > 0) {
       this.timer = setInterval(this.countDown, 1000);
@@ -88,9 +111,16 @@ class ControlPanel extends React.Component {
   
   resetTimer() {
     clearInterval(this.timer);
-    this.setState({seconds: this.state.pomodoroSeconds, time: this.secondsToTime(this.state.pomodoroSeconds)});
-    this.setState({timeStarted: false, startButtonText: "Start", paused: false, reset: true})
-    this.setState({runningPomodoro: true, runningShortBreak: false, runningLongBreak: false, shortBreakCount: 0})
+    
+    //If they click the reset button while pomodoro is running, then dont need to run the same playlist
+    //on the next time they click start. Otherwise, we need to ensure the pomodor playlist gets started.
+    if (!this.state.runningPomodoro) {
+      this.setState({playlistStarted: false});
+    }
+    this.setState({seconds: this.props.pomodoroSeconds, time: this.secondsToTime(this.props.pomodoroSeconds)});
+    this.setState({timeStarted: false, startButtonText: "Start", paused: false, reset: true});
+    this.setState({runningPomodoro: true, runningShortBreak: false, runningLongBreak: false, shortBreakCount: 0});
+
   }
   
   pauseTimer() {
@@ -111,16 +141,29 @@ class ControlPanel extends React.Component {
       if (this.state.runningPomodoro) {
         if (this.state.shortBreakCount < 3) {
           //Take a short break
-          this.setState({time: this.secondsToTime(this.props.shortBreakSeconds), seconds: this.props.shortBreakSeconds, runningPomodoro: false, runningShortBreak: true, shortBreakCount: this.state.shortBreakCount + 1});
+          this.setState({time: this.secondsToTime(this.props.shortBreakSeconds), seconds: this.props.shortBreakSeconds, runningPomodoro: false, runningShortBreak: true, shortBreakCount: this.state.shortBreakCount + 1, playlistStarted: false}, () => {
+            this.startTimer();
+          });
         } else {
           //Take a long break
-          this.setState({time: this.secondsToTime(this.props.longBreakSeconds), seconds: this.props.longBreakSeconds, runningPomodoro: false, runningLongBreak: true, shortBreakCount: 0});
+          this.setState({time: this.secondsToTime(this.props.longBreakSeconds), seconds: this.props.longBreakSeconds, runningPomodoro: false, runningLongBreak: true, shortBreakCount: 0, playlistStarted: false}, () => {
+            this.startTimer();
+          });
         }
       } else {
-        this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds, runningShortBreak: false, runningLongBreak: false, runningPomodoro: true});
+        this.setState({time: this.secondsToTime(this.props.pomodoroSeconds), seconds: this.props.pomodoroSeconds, runningShortBreak: false, runningLongBreak: false, runningPomodoro: true, playlistStarted: false}, () => {
+          this.startTimer();
+        });
       }
-      this.startTimer();
     }
+  }
+  
+  selectStudyPlaylist() {
+    //Get random item from study map
+    let keys = Array.from(this.state.studyMap.keys());
+    return keys[Math.floor(Math.random() * keys.length)];
+    
+    
   }
   
   render() {
@@ -129,6 +172,7 @@ class ControlPanel extends React.Component {
 
       <div id="timer-container">
         {this.state.time.mDisp} : {this.state.time.sDisp}
+        <br/>
       </div>
       <br/>
       <div id="timer-button-container">

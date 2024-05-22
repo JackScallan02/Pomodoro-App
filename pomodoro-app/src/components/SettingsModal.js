@@ -37,7 +37,7 @@ class SettingsModal extends React.Component {
     let totalLongBreakSeconds = this.state.longBreakMinutes*60 + this.state.longBreakSeconds
     
     if (this.state.pomodoroMinutes >= 5 &&
-      (totalShortBreakSeconds < totalLongBreakSeconds) &&
+      (totalShortBreakSeconds <= totalLongBreakSeconds) &&
       this.state.longBreakMinutes >= 1 && this.state.shortBreakMinutes >= 1) {
       return true;
     }
@@ -75,8 +75,7 @@ class SettingsModal extends React.Component {
           (<div className="alert alert-danger" role="alert">
             Your long break must be at least 1 minute
           </div>)
-          :
-          (this.state.submitButtonPressed && this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds) > (this.state.longBreakMinutes*60 + this.state.longBreakSeconds) ?
+          : (this.state.submitButtonPressed && (this.state.shortBreakMinutes*60 + this.state.shortBreakSeconds) > (this.state.longBreakMinutes*60 + this.state.longBreakSeconds)) ?
           (<div className="alert alert-danger" role="alert">
             Your long break must be at least as long as your short break
           </div>)

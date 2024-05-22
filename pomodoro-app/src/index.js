@@ -15,11 +15,12 @@ import { POMODORO_TIME, LONG_BREAK_TIME, SHORT_BREAK_TIME } from './constants.js
 class App extends React.Component {
   constructor() {
     super();
+    
     this.state={
       show:false,
       pomodoroTotalSeconds: POMODORO_TIME,
       longBreakTotalSeconds: LONG_BREAK_TIME,
-      shortBreakTotalSeconds: SHORT_BREAK_TIME
+      shortBreakTotalSeconds: SHORT_BREAK_TIME,
     }
     this.updateTime = this.updateTime.bind(this);
   }
@@ -37,6 +38,12 @@ class App extends React.Component {
     })
   }
   
+  updatePlaylists(playlistMap) {
+    this.setState({
+      playlistMap: playlistMap
+    });
+  }
+  
   render() {
 
     return (
@@ -48,14 +55,14 @@ class App extends React.Component {
           <br/>
           <ControlPanel pomodoroSeconds={this.state.pomodoroTotalSeconds} longBreakSeconds={this.state.longBreakTotalSeconds} shortBreakSeconds={this.state.shortBreakTotalSeconds}/>
           <br/>
-          <PlaylistModal buttonText='Modify break playlist' modalHeader='Select the playlists you want to shuffle through for breaks' playlistType='break'/>
+          <PlaylistModal buttonText='Modify break playlists' modalHeader='Select the playlists you want to shuffle through for breaks' playlistType='break'/>
           <br/>
-          <PlaylistTable playlistMap={this.state.breakMap} playlistType='break'/>
+          <PlaylistTable playlistType='break'/>
           <br/>
           <br/>
-          <PlaylistModal buttonText='Modify study playlist' modalHeader='Select the playlists you want to shuffle through for studying' playlistType='study'/>
+          <PlaylistModal buttonText='Modify study playlists' modalHeader='Select the playlists you want to shuffle through for studying' playlistType='study'/>
           <br/>
-          <PlaylistTable playlistMap={this.state.studyMap} playlistType='study'/>
+          <PlaylistTable playlistType='study'/>
           <br/>
         </div>
       </div>

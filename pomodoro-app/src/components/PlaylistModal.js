@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button, Modal} from 'react-bootstrap';
+import {GetPlaylists} from '../spotify_service.js'
 
 class PlaylistModal extends React.Component {
   constructor(props) {
@@ -29,32 +30,7 @@ class PlaylistModal extends React.Component {
   handleModal() {
     this.setState({show:!this.state.show})
   }
-  getPlaylists() {
 
-    const apiUrl = 'https://api.spotify.com/v1/users/22acukbvk3tk5p3puyd76zxdq/playlists';
-    const api_key = 'BQDFyJdvtaesmQwpXIC92HXLB-qurDs7jltskqhUMZf8gonED8rXhMqcFgtDECVq2E-neRKOrNIR17GBX59yhD5lAFA0DFgNUSI3wtu5ACDn0nWwVv4'; //replace with key
-    
-    const requestOptions = {
-      method: 'GET',
-      headers: {
-        'Content-Type' : 'application/x-www-form-urlencoded',
-        'Authorization' : `Bearer ${api_key}`
-      }
-    };
-
-    fetch(apiUrl, requestOptions).then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }).then(data => {
-      this.setState({playLists:data.items}, () => {
-      })
-      
-    }).catch(error=>{
-      console.log('Error: ', error);
-    });
-  }
   
   setPlaylistMap(map, index, imageUrl, itemName, playlistId) {
     if (map.has(playlistId)) {
@@ -75,7 +51,7 @@ class PlaylistModal extends React.Component {
   render() {
     return (
       <>
-      <Button onClick={()=>{this.handleModal(); this.getPlaylists()}}>{this.props.buttonText}</Button>
+      <Button onClick={()=>{this.handleModal(); GetPlaylists.call(this)}}>{this.props.buttonText}</Button>
       <Modal show={this.state.show} onHide={()=>{this.handleModal()}}>
         <Modal.Header closeButton>{this.props.modalHeader}</Modal.Header>
         <Modal.Body>
